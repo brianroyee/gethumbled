@@ -117,7 +117,7 @@ GetHumbled exists to give people the wake-up call they need - before it costs th
 
 ---
 
-**Live Demo**: [gethumbled.vercel.app](https://gethumbled.vercel.app) _(replace with your actual URL)_
+**Live Demo**: [https://gethumbled-three.vercel.app/](https://gethumbled-three.vercel.app/) _(replace with your actual URL)_
 
 **Built by**: Brian Roy  
 **License**: MIT
