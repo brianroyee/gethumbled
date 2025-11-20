@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import RoastForm from '@/components/RoastForm';
 import RoastDisplay from '@/components/RoastDisplay';
+import FeedbackList from '@/components/FeedbackList';
 import { RoastResponse } from '@/types/roast';
 
 import { incrementVisitorCount } from '@/app/actions';
@@ -57,6 +58,11 @@ export default function Home() {
           ) : (
             <RoastForm onRoastComplete={setRoastResult} />
           )}
+        </div>
+
+        {/* Recent Feedback */}
+        <div className="mb-16">
+          <FeedbackList />
         </div>
 
         {/* Footer */}

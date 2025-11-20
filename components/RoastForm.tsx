@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { RoastResponse, RoastError } from '@/types/roast';
+import { createWorker } from 'tesseract.js';
 
 interface RoastFormProps {
     onRoastComplete: (roast: RoastResponse) => void;
@@ -22,6 +23,8 @@ export default function RoastForm({ onRoastComplete }: RoastFormProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [loadingMessage, setLoadingMessage] = useState('');
+    const [isProcessingImage, setIsProcessingImage] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -63,15 +66,52 @@ export default function RoastForm({ onRoastComplete }: RoastFormProps) {
         }
     };
 
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsProcessingImage(true);
+        setError(null);
+
+        try {
+            const worker = await createWorker('eng');
+            const { data: { text } } = await worker.recognize(file);
+            await worker.terminate();
+
+            setProfileText(text);
+        } catch (err) {
+            setError('Failed to read screenshot. Try a clearer image or paste text manually.');
+        } finally {
+            setIsProcessingImage(false);
+        }
+    };
+
     const isFormValid = profileText.trim().length >= 50;
 
     return (
         <div className="w-full max-w-3xl mx-auto">
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="profile-text" className="block text-sm font-mono uppercase tracking-wider text-red-400 mb-3">
-                        Paste Your LinkedIn Profile Text
-                    </label>
+                    <div className="flex justify-between items-center mb-3">
+                        <label htmlFor="profile-text" className="block text-sm font-mono uppercase tracking-wider text-red-400">
+                            Paste Your LinkedIn Profile Text
+                        </label>
+                        <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isLoading || isProcessingImage}
+                            className="text-xs font-mono uppercase tracking-wider text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 px-3 py-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {isProcessingImage ? 'Scanning...' : '📸 Upload Screenshot'}
+                        </button>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                        />
+                    </div>
                     <textarea
                         id="profile-text"
                         value={profileText}
