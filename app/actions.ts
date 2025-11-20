@@ -63,22 +63,25 @@ export async function resetVisitorCount() {
 
 // Feedback System
 export type Feedback = {
+  id: string;
   text: string;
   name: string;
   date: string;
+  rank: number;
 };
 
 export async function submitFeedback(text: string, name: string) {
   if (!text || text.length > 280) return false;
   
   const feedback: Feedback = {
-    text: text.slice(0, 280), // Truncate just in case
+    id: crypto.randomUUID(),
+    text: text.slice(0, 280),
     name: name.slice(0, 50) || 'Anonymous',
     date: new Date().toISOString(),
+    rank: 0, // Default rank
   };
 
   try {
-    // Push to list and keep only last 50 items
     await kv.lpush('feedback_list', feedback);
     await kv.ltrim('feedback_list', 0, 49);
     return true;
@@ -90,11 +93,66 @@ export async function submitFeedback(text: string, name: string) {
 
 export async function getRecentFeedback() {
   try {
-    // Get top 10 feedback items
-    const feedback = await kv.lrange<Feedback>('feedback_list', 0, 9);
-    return feedback;
+    const feedback = await kv.lrange<Feedback>('feedback_list', 0, 49);
+    // Sort by rank (desc), then date (desc)
+    const sorted = feedback.sort((a, b) => {
+      if (b.rank !== a.rank) return b.rank - a.rank;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+    return sorted.slice(0, 10); // Return top 10
   } catch (error) {
     console.error('Failed to fetch feedback:', error);
     return [];
+  }
+}
+
+// Admin Functions
+export async function getAllFeedback() {
+  try {
+    const feedback = await kv.lrange<Feedback>('feedback_list', 0, 49);
+    // Sort by rank (desc), then date (desc)
+    return feedback.sort((a, b) => {
+      if (b.rank !== a.rank) return b.rank - a.rank;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+  } catch (error) {
+    console.error('Failed to fetch all feedback:', error);
+    return [];
+  }
+}
+
+export async function deleteFeedback(id: string) {
+  try {
+    const allFeedback = await kv.lrange<Feedback>('feedback_list', 0, 49);
+    const filtered = allFeedback.filter(f => f.id !== id);
+    
+    // Clear and repopulate the list
+    await kv.del('feedback_list');
+    if (filtered.length > 0) {
+      await kv.lpush('feedback_list', ...filtered);
+    }
+    return true;
+  } catch (error) {
+    console.error('Failed to delete feedback:', error);
+    return false;
+  }
+}
+
+export async function updateFeedbackRank(id: string, rank: number) {
+  try {
+    const allFeedback = await kv.lrange<Feedback>('feedback_list', 0, 49);
+    const updated = allFeedback.map(f => 
+      f.id === id ? { ...f, rank } : f
+    );
+    
+    // Clear and repopulate the list
+    await kv.del('feedback_list');
+    if (updated.length > 0) {
+      await kv.lpush('feedback_list', ...updated);
+    }
+    return true;
+  } catch (error) {
+    console.error('Failed to update feedback rank:', error);
+    return false;
   }
 }

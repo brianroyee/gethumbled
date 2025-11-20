@@ -8,7 +8,11 @@ import {
     getFundingAmount, 
     updateFundingAmount, 
     getVisitorCount, 
-    resetVisitorCount 
+    resetVisitorCount,
+    getAllFeedback,
+    deleteFeedback,
+    updateFeedbackRank,
+    Feedback
 } from '@/app/actions';
 
 export default function AdminPage() {
@@ -18,6 +22,8 @@ export default function AdminPage() {
     const [visitors, setVisitors] = useState<number>(0);
     const [newFunding, setNewFunding] = useState('');
     const [loading, setLoading] = useState(false);
+    const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+    const [rankInputs, setRankInputs] = useState<Record<string, string>>({});
 
     // Load initial data when authenticated
     useEffect(() => {
@@ -29,8 +35,10 @@ export default function AdminPage() {
     const loadData = async () => {
         const funding = await getFundingAmount();
         const visitorCount = await getVisitorCount();
+        const allFeedback = await getAllFeedback();
         setCurrentFunding(Number(funding));
         setVisitors(Number(visitorCount));
+        setFeedbacks(allFeedback);
     };
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -72,6 +80,35 @@ export default function AdminPage() {
         if (confirm('Are you sure you want to reset visitor count?')) {
             await resetVisitorCount();
             setVisitors(0);
+        }
+    };
+
+    const handleDeleteFeedback = async (id: string) => {
+        if (confirm('Are you sure you want to delete this feedback?')) {
+            const success = await deleteFeedback(id);
+            if (success) {
+                await loadData(); // Reload feedback
+            } else {
+                alert('Failed to delete feedback');
+            }
+        }
+    };
+
+    const handleUpdateRank = async (id: string) => {
+        const rankValue = rankInputs[id];
+        const rank = parseInt(rankValue);
+        
+        if (isNaN(rank) || rank < 0 || rank > 100) {
+            alert('Please enter a valid rank (0-100)');
+            return;
+        }
+
+        const success = await updateFeedbackRank(id, rank);
+        if (success) {
+            await loadData(); // Reload feedback
+            setRankInputs(prev => ({ ...prev, [id]: '' }));
+        } else {
+            alert('Failed to update rank');
         }
     };
 
@@ -174,6 +211,68 @@ export default function AdminPage() {
                     </div>
                     <p className="text-xs text-zinc-500 mt-2">
                         This will update the progress bar on the Support page
+                    </p>
+                </div>
+
+                {/* Feedback Management */}
+                <div className="bg-zinc-900 border-2 border-red-500/30 p-6 mb-8">
+                    <h2 className="text-xl text-red-400 mb-4 uppercase">Manage Feedback</h2>
+                    {feedbacks.length === 0 ? (
+                        <p className="text-zinc-500 text-sm font-mono">No feedback yet</p>
+                    ) : (
+                        <div className="space-y-4">
+                            {feedbacks.map((feedback) => (
+                                <div key={feedback.id} className="bg-zinc-800 border border-zinc-700 p-4">
+                                    <div className="grid grid-cols-12 gap-4 items-start">
+                                        {/* Rank */}
+                                        <div className="col-span-1">
+                                            <div className="text-xs text-zinc-500 mb-1 uppercase">Rank</div>
+                                            <div className="text-2xl font-bold text-red-400">{feedback.rank}</div>
+                                        </div>
+
+                                        {/* Feedback Content */}
+                                        <div className="col-span-7">
+                                            <div className="text-xs text-zinc-500 mb-1 uppercase">Feedback</div>
+                                            <p className="text-zinc-300 text-sm mb-2">"{feedback.text}"</p>
+                                            <div className="flex gap-4 text-xs text-zinc-600">
+                                                <span>By: <span className="text-red-400">{feedback.name}</span></span>
+                                                <span>{new Date(feedback.date).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="col-span-4 space-y-2">
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type="number"
+                                                    value={rankInputs[feedback.id] || ''}
+                                                    onChange={(e) => setRankInputs(prev => ({ ...prev, [feedback.id]: e.target.value }))}
+                                                    placeholder="New rank (0-100)"
+                                                    className="flex-1 bg-zinc-900 border border-zinc-700 text-white px-2 py-1 text-sm focus:border-red-500 focus:outline-none"
+                                                    min="0"
+                                                    max="100"
+                                                />
+                                                <button
+                                                    onClick={() => handleUpdateRank(feedback.id)}
+                                                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 text-xs uppercase transition-colors"
+                                                >
+                                                    Update
+                                                </button>
+                                            </div>
+                                            <button
+                                                onClick={() => handleDeleteFeedback(feedback.id)}
+                                                className="w-full bg-red-900 hover:bg-red-800 text-red-300 px-3 py-1 text-xs uppercase transition-colors"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    <p className="text-xs text-zinc-500 mt-4">
+                        Higher rank = displayed first on homepage. Rank 0 = default (sorted by date).
                     </p>
                 </div>
 
