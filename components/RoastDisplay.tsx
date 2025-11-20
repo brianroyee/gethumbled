@@ -28,83 +28,95 @@ export default function RoastDisplay({ roast, onReset }: RoastDisplayProps) {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto space-y-6">
-            {/* Header with Score */}
-            <div className="bg-zinc-900 border-4 border-red-500 p-8">
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-red-400 font-mono uppercase tracking-wider text-sm">The Verdict</h2>
-                    <div className="text-right">
-                        <div className={`text-6xl font-bold font-mono ${getScoreColor(roast.score)}`}>
-                            {roast.score}/10
-                        </div>
-                        <div className="text-zinc-500 font-mono text-xs uppercase mt-1">
-                            {getScoreLabel(roast.score)}
-                        </div>
+        <div className="w-full max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            
+            {/* Bento Grid Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                
+                {/* 1. Score Card (Large, Top Left) */}
+                <div className="md:col-span-4 bg-zinc-900 border-4 border-red-500 p-8 flex flex-col justify-center items-center text-center shadow-[8px_8px_0px_0px_rgba(239,68,68,0.5)] hover:translate-x-1 hover:-translate-y-1 transition-transform duration-300">
+                    <h2 className="text-red-400 font-mono uppercase tracking-wider text-sm mb-2">The Verdict</h2>
+                    <div className={`text-8xl font-black font-mono ${getScoreColor(roast.score)}`}>
+                        {roast.score}
+                    </div>
+                    <div className="text-zinc-500 font-mono text-sm uppercase tracking-widest mt-2">
+                        / 10
+                    </div>
+                    <div className="mt-4 px-4 py-1 bg-zinc-800 rounded text-zinc-300 font-mono text-xs uppercase">
+                        {getScoreLabel(roast.score)}
                     </div>
                 </div>
-            </div>
 
-            {/* Headline Roast */}
-            <div className="bg-zinc-900 border-2 border-red-500/30 p-6">
-                <h3 className="text-red-400 font-mono uppercase tracking-wider text-xs mb-3">Headline Analysis</h3>
-                <p className="text-zinc-100 text-lg leading-relaxed">{roast.headline_roast}</p>
-            </div>
-
-            {/* Summary Roast */}
-            <div className="bg-zinc-900 border-2 border-red-500/30 p-6">
-                <h3 className="text-red-400 font-mono uppercase tracking-wider text-xs mb-3">Profile Breakdown</h3>
-                <p className="text-zinc-100 leading-relaxed whitespace-pre-line">{roast.summary_roast}</p>
-            </div>
-
-            {/* Red Flags */}
-            <div className="bg-red-950/30 border-2 border-red-500 p-6">
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-red-400 font-mono uppercase tracking-wider text-xs">Red Flags Detected</h3>
-                    <span className="bg-red-600 text-white px-3 py-1 font-mono text-sm">
-                        {roast.buzzword_count} BUZZWORDS
-                    </span>
+                {/* 2. Headline Roast (Wide, Top Right) */}
+                <div className="md:col-span-8 bg-zinc-900 border-2 border-zinc-700 p-8 flex flex-col justify-center hover:border-red-500/50 transition-colors duration-300">
+                    <h3 className="text-red-400 font-mono uppercase tracking-wider text-xs mb-4">Headline Analysis</h3>
+                    <p className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                        &ldquo;{roast.headline_roast}&rdquo;
+                    </p>
                 </div>
-                <ul className="space-y-2">
-                    {roast.red_flags.map((flag, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                            <span className="text-red-500 text-xl">⚠</span>
-                            <span className="text-zinc-100 flex-1">{flag}</span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
 
-            {/* Career Advice */}
-            <div className="bg-zinc-900 border-2 border-orange-500/50 p-6">
-                <h3 className="text-orange-400 font-mono uppercase tracking-wider text-xs mb-3">Unsolicited Career Advice</h3>
-                <p className="text-zinc-100 text-lg italic leading-relaxed">&ldquo;{roast.career_advice}&rdquo;</p>
-            </div>
+                {/* 3. Summary Roast (Medium, Middle Left) */}
+                <div className="md:col-span-7 bg-zinc-900 border-2 border-zinc-700 p-8 hover:border-red-500/50 transition-colors duration-300">
+                    <h3 className="text-red-400 font-mono uppercase tracking-wider text-xs mb-4">Profile Breakdown</h3>
+                    <p className="text-zinc-300 text-lg leading-relaxed whitespace-pre-line">
+                        {roast.summary_roast}
+                    </p>
+                </div>
 
-            {/* Educational Link */}
-            <div className="mt-8 text-center">
-                <p className="text-zinc-500 mb-3 text-sm">Stung a little? Here's why it matters:</p>
-                <a
-                    href="/why-about-matters"
-                    className="inline-block bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700 px-6 py-3 rounded transition-colors text-sm uppercase tracking-wide"
-                >
-                    Why the "About" Section is Critical →
-                </a>
+                {/* 4. Red Flags (Medium, Middle Right) */}
+                <div className="md:col-span-5 bg-red-950/20 border-2 border-red-900/50 p-8">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-red-400 font-mono uppercase tracking-wider text-xs">Red Flags</h3>
+                        <span className="bg-red-600 text-white px-2 py-0.5 font-mono text-xs rounded">
+                            {roast.buzzword_count} DETECTED
+                        </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {roast.red_flags.map((flag, index) => (
+                            <span 
+                                key={index} 
+                                className="inline-flex items-center gap-2 px-3 py-2 bg-red-500/10 border border-red-500/30 text-red-200 text-sm rounded hover:bg-red-500/20 transition-colors cursor-default"
+                            >
+                                <span className="text-red-500">⚠</span> {flag}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+
+                {/* 5. Career Advice (Full Width, Bottom) */}
+                <div className="md:col-span-12 bg-gradient-to-r from-zinc-900 to-zinc-800 border-l-4 border-orange-500 p-8">
+                    <h3 className="text-orange-400 font-mono uppercase tracking-wider text-xs mb-2">Unsolicited Career Advice</h3>
+                    <p className="text-xl md:text-2xl text-zinc-100 italic font-serif">
+                        {roast.career_advice}
+                    </p>
+                </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row gap-4 pt-4">
                 <button
                     onClick={handleShare}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-mono uppercase tracking-wider py-4 px-8 border-2 border-blue-500 transition-colors"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-mono uppercase tracking-wider py-4 px-8 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all"
                 >
-                    Share This Humiliation on X
+                    Share on X
                 </button>
                 <button
                     onClick={onReset}
-                    className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-mono uppercase tracking-wider py-4 px-8 border-2 border-zinc-700 transition-colors"
+                    className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-mono uppercase tracking-wider py-4 px-8 border-b-4 border-zinc-950 active:border-b-0 active:translate-y-1 transition-all"
                 >
-                    Roast Another Profile
+                    Roast Another
                 </button>
+            </div>
+
+            {/* Educational Link */}
+            <div className="text-center pt-8 border-t border-zinc-800/50">
+                <p className="text-zinc-500 mb-3 text-sm">Stung a little? Here's why it matters:</p>
+                <a
+                    href="/why-about-matters"
+                    className="inline-block text-zinc-400 hover:text-red-400 transition-colors text-sm uppercase tracking-wide border-b border-zinc-700 hover:border-red-400 pb-0.5"
+                >
+                    Why the "About" Section is Critical →
+                </a>
             </div>
         </div>
     );

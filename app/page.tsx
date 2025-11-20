@@ -30,13 +30,13 @@ export default function Home() {
 
       <div className="container mx-auto px-4 py-12 md:py-16">
         {/* Header */}
-        <header className="text-center mb-8">
-          <h1 className="text-4xl md:text-6xl font-bold font-mono mb-3 text-red-500 uppercase tracking-tight">
+        <header className="text-center mb-8 space-y-4">
+          <h1 className="text-4xl md:text-6xl font-bold font-mono mb-3 text-red-500 uppercase tracking-tight animate-in fade-in slide-in-from-top-8 duration-700">
             Get Your Career
             <br />
             <span className="text-white">Humbled.</span>
           </h1>
-          <p className="text-zinc-400 text-base md:text-lg font-mono max-w-2xl mx-auto">
+          <p className="text-zinc-400 text-base md:text-lg font-mono max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 fill-mode-backwards">
             Paste your LinkedIn profile text. Get brutally honest feedback from an AI that's seen it all.
           </p>
         </header>

@@ -87,7 +87,7 @@ Passionate thought leader with 10+ years driving synergistic solutions...
 Experience:
 Chief Visionary Officer at TechCorp
 • Spearheaded game-changing initiatives..."
-                        className="w-full h-48 bg-zinc-900 border-2 border-red-500/30 text-zinc-100 p-4 font-mono text-sm focus:border-red-500 focus:outline-none resize-none placeholder:text-zinc-600"
+                        className="w-full h-48 bg-zinc-900 border-2 border-red-500/30 text-zinc-100 p-4 font-mono text-sm focus:border-red-500 focus:outline-none focus:ring-4 focus:ring-red-500/10 focus:shadow-[0_0_30px_rgba(239,68,68,0.2)] transition-all duration-300 resize-none placeholder:text-zinc-600"
                         disabled={isLoading}
                     />
                     {profileText.trim().length < 50 && profileText.length > 0 && (
