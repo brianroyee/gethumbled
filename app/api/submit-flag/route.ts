@@ -106,8 +106,13 @@ export async function GET() {
   try {
     const leaderboard = await kv.lrange('ctf_leaderboard', 0, 99); // Get all entries
     
-    // Count completions per user
-    const userStats: Record<string, { name: string; count: number; levels: Set<string> }> = {};
+    // Count completions per user and track earliest timestamp
+    const userStats: Record<string, { 
+      name: string; 
+      count: number; 
+      levels: Set<string>;
+      earliestTimestamp: string;
+    }> = {};
     const levelSolves: Record<string, number> = {
       level_1: 0,
       level_2: 0
@@ -117,10 +122,20 @@ export async function GET() {
       leaderboard.forEach((entry: any) => {
         const name = entry.name || 'Anonymous';
         if (!userStats[name]) {
-          userStats[name] = { name, count: 0, levels: new Set() };
+          userStats[name] = { 
+            name, 
+            count: 0, 
+            levels: new Set(),
+            earliestTimestamp: entry.timestamp
+          };
         }
         userStats[name].levels.add(entry.level);
         userStats[name].count = userStats[name].levels.size;
+        
+        // Track earliest timestamp for this user
+        if (entry.timestamp < userStats[name].earliestTimestamp) {
+          userStats[name].earliestTimestamp = entry.timestamp;
+        }
         
         // Count solves per level
         if (entry.level && levelSolves[entry.level] !== undefined) {
@@ -129,10 +144,21 @@ export async function GET() {
       });
     }
 
-    // Convert to array and sort by count
+    // Convert to array and sort by count (desc), then by earliest timestamp (asc)
     const topSolvers = Object.values(userStats)
-      .map(stat => ({ name: stat.name, flagsFound: stat.count }))
-      .sort((a, b) => b.flagsFound - a.flagsFound)
+      .map(stat => ({ 
+        name: stat.name, 
+        flagsFound: stat.count,
+        firstSolveTime: stat.earliestTimestamp
+      }))
+      .sort((a, b) => {
+        // First sort by number of flags (descending)
+        if (b.flagsFound !== a.flagsFound) {
+          return b.flagsFound - a.flagsFound;
+        }
+        // If same number of flags, sort by earliest timestamp (ascending)
+        return new Date(a.firstSolveTime).getTime() - new Date(b.firstSolveTime).getTime();
+      })
       .slice(0, 10);
 
     return NextResponse.json({

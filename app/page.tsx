@@ -68,6 +68,11 @@ export default function Home() {
           <FeedbackList />
         </div>
 
+        {/* Ad Container */}
+        <div className="mt-12 flex justify-center">
+          <div id="container-4f6b2bd98afadfd3f05a20777c2cbc24"></div>
+        </div>
+
         {/* Footer */}
         <footer className="text-center text-zinc-600 font-mono text-xs pt-6 mt-8 border-t border-zinc-800">
           <p>No profiles were permanently harmed in the making of this roast!</p>
