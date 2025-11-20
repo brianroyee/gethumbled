@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "LinkedIn Profile Roaster - Get Your Career Humbled",
-  description: "Paste your LinkedIn profile and get brutally honest, witty feedback from an AI recruiter who's seen it all.",
+  description: "Paste your LinkedIn profile or upload a screenshot of the about section and get brutally honest, witty feedback from an AI recruiter who's seen it all.",
 };
 
 export default function RootLayout({
