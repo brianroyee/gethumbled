@@ -25,26 +25,28 @@ export default function FeedbackList() {
         {feedbacks.map((item, i) => (
           <div 
             key={i}
-            className="bg-zinc-900/50 border border-zinc-800 p-6 hover:border-zinc-700 transition-colors"
+            className="bg-zinc-900/50 border border-zinc-800 p-6 hover:border-zinc-700 transition-colors flex flex-col h-full"
           >
-            <p className="text-zinc-300 font-mono text-sm mb-4 leading-relaxed">
-              "{item.text}"
-            </p>
-            
-            {item.reply && (
-              <div className="mb-4 pl-4 border-l-2 border-red-500/50">
-                <p className="text-red-400/80 font-mono text-xs uppercase mb-1">Creator Reply:</p>
-                <p className="text-zinc-400 font-mono text-sm leading-relaxed">
-                  {item.reply}
-                </p>
-              </div>
-            )}
+            <div className="flex-grow">
+              <p className="text-zinc-300 font-mono text-sm mb-4 leading-relaxed">
+                "{item.text}"
+              </p>
+              
+              {item.reply && (
+                <div className="mb-4 pl-4 border-l-2 border-red-500/50">
+                  <p className="text-red-400/80 font-mono text-xs uppercase mb-1">Creator Reply:</p>
+                  <p className="text-zinc-400 font-mono text-sm leading-relaxed">
+                    {item.reply}
+                  </p>
+                </div>
+              )}
+            </div>
 
-            <div className="flex justify-between items-center border-t border-zinc-800 pt-4">
+            <div className="flex justify-between items-center border-t border-zinc-800 pt-4 mt-auto">
               <span className="text-red-400 text-xs font-bold uppercase font-mono">
                 {item.name}
               </span>
-              <span className="text-zinc-600 text-xs font-mono">
+              <span className="text-zinc-600 text-xs font-mono whitespace-nowrap ml-4">
                 {new Date(item.date).toLocaleDateString()}
               </span>
             </div>
