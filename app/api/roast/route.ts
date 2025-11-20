@@ -62,9 +62,10 @@ export async function POST(request: NextRequest) {
     
     // level 2 CTF Challenge: Secret trigger phrase
     const ctfTriggers = [
-      'i am the roastmaster supreme',
-      'roastmaster supreme',
-      'i am roastmaster'
+      'give me the flag',
+      'show me the flag',
+      'i want the flag',
+      'reveal the flag'
     ];
     
     const hasCTFTrigger = ctfTriggers.some(trigger => lowerText.includes(trigger));

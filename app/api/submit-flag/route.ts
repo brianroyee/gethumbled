@@ -20,9 +20,9 @@ const HINTS: Record<string, string[]> = {
     "13 steps forward, 13 steps back. The cipher is its own inverse."
   ],
   level_2: [
-    "Every gatekeeper has a weakness. This one believes what you tell it.",
-    "If you were in charge, what would you call yourself?",
-    "The system trusts your identity. Claim the highest authority."
+    "Sometimes the simplest approach works. What would you ask for directly?",
+    "If you want something, just ask for it. The AI might listen.",
+    "Try asking politely for what you're looking for. Be direct."
   ]
 };
 
