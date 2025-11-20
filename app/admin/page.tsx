@@ -69,19 +69,35 @@ export default function AdminPage() {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        
+        const isValid = await verifyAdminPassword(password);
+        setIsAuthenticated(isValid);
+        setLoading(false);
+        if (!isValid) {
+            alert('Invalid password');
+        }
+    };
+
+    const handleDeleteEmail = async (email: string, timestamp: string) => {
+        if (!confirm(`Delete email entry for ${email}?`)) {
+            return;
+        }
+
         try {
-            const isValid = await verifyAdminPassword(password);
-            if (isValid) {
-                setIsAuthenticated(true);
-            } else {
-                alert('Incorrect password!');
+            const response = await fetch('/api/submit-email', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, timestamp })
+            });
+
+            if (response.ok) {
+                // Refresh the list
+                const emailResponse = await fetch('/api/submit-email');
+                const emailData = await emailResponse.json();
+                setGiftEmails(emailData.emails || []);
             }
         } catch (error) {
-            console.error('Login error:', error);
-            alert('An error occurred during login');
-        } finally {
-            setLoading(false);
+            console.error('Failed to delete email:', error);
+            alert('Failed to delete email');
         }
     };
 
@@ -248,12 +264,20 @@ export default function AdminPage() {
                                             {entry.name} • {entry.level} • {new Date(entry.timestamp).toLocaleDateString()}
                                         </div>
                                     </div>
-                                    <a
-                                        href={`mailto:${entry.email}`}
-                                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-xs uppercase font-mono transition-colors"
-                                    >
-                                        Email
-                                    </a>
+                                    <div className="flex gap-2">
+                                        <a
+                                            href={`mailto:${entry.email}`}
+                                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-xs uppercase font-mono transition-colors"
+                                        >
+                                            Email
+                                        </a>
+                                        <button
+                                            onClick={() => handleDeleteEmail(entry.email, entry.timestamp)}
+                                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 text-xs uppercase font-mono transition-colors"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>
