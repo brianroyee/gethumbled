@@ -58,7 +58,7 @@ export default function WhyAboutMattersPage() {
             href="/"
             className="inline-block bg-red-600 hover:bg-red-700 text-white uppercase py-4 px-12 border-b-4 border-red-800 active:border-b-0 active:translate-y-1 transition-all text-lg font-bold tracking-wider font-mono"
           >
-            ← Go Fix Your Profile
+            ← Back to Roasting
           </a>
         </div>
       </div>
