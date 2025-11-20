@@ -30,6 +30,16 @@ export default function FeedbackList() {
             <p className="text-zinc-300 font-mono text-sm mb-4 leading-relaxed">
               "{item.text}"
             </p>
+            
+            {item.reply && (
+              <div className="mb-4 pl-4 border-l-2 border-red-500/50">
+                <p className="text-red-400/80 font-mono text-xs uppercase mb-1">Creator Reply:</p>
+                <p className="text-zinc-400 font-mono text-sm leading-relaxed">
+                  {item.reply}
+                </p>
+              </div>
+            )}
+
             <div className="flex justify-between items-center border-t border-zinc-800 pt-4">
               <span className="text-red-400 text-xs font-bold uppercase font-mono">
                 {item.name}

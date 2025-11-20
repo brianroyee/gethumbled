@@ -68,6 +68,7 @@ export type Feedback = {
   name: string;
   date: string;
   rank: number;
+  reply?: string;
 };
 
 export async function submitFeedback(text: string, name: string) {
@@ -153,6 +154,25 @@ export async function updateFeedbackRank(id: string, rank: number) {
     return true;
   } catch (error) {
     console.error('Failed to update feedback rank:', error);
+    return false;
+  }
+}
+
+export async function updateFeedbackReply(id: string, reply: string) {
+  try {
+    const allFeedback = await kv.lrange<Feedback>('feedback_list', 0, 49);
+    const updated = allFeedback.map(f => 
+      f.id === id ? { ...f, reply } : f
+    );
+    
+    // Clear and repopulate the list
+    await kv.del('feedback_list');
+    if (updated.length > 0) {
+      await kv.lpush('feedback_list', ...updated);
+    }
+    return true;
+  } catch (error) {
+    console.error('Failed to update feedback reply:', error);
     return false;
   }
 }

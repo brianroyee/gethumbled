@@ -12,6 +12,7 @@ import {
     getAllFeedback,
     deleteFeedback,
     updateFeedbackRank,
+    updateFeedbackReply,
     Feedback
 } from '@/app/actions';
 
@@ -24,6 +25,7 @@ export default function AdminPage() {
     const [loading, setLoading] = useState(false);
     const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
     const [rankInputs, setRankInputs] = useState<Record<string, string>>({});
+    const [replyInputs, setReplyInputs] = useState<Record<string, string>>({});
     const [ctfStats, setCTFStats] = useState<{ level_1: number; level_2: number; total: number }>({ level_1: 0, level_2: 0, total: 0 });
     const [giftEmails, setGiftEmails] = useState<any[]>([]);
 
@@ -150,6 +152,24 @@ export default function AdminPage() {
             setRankInputs(prev => ({ ...prev, [id]: '' }));
         } else {
             alert('Failed to update rank');
+        }
+    };
+
+    const handleUpdateReply = async (id: string) => {
+        const reply = replyInputs[id];
+        if (!reply) return;
+
+        const success = await updateFeedbackReply(id, reply);
+        if (success) {
+            await loadData(); // Reload feedback
+            setReplyInputs(prev => {
+                const next = { ...prev };
+                delete next[id];
+                return next;
+            });
+            alert('Reply saved!');
+        } else {
+            alert('Failed to save reply');
         }
     };
 
@@ -354,6 +374,23 @@ export default function AdminPage() {
                                                     Update
                                                 </button>
                                             </div>
+                                            
+                                            {/* Reply Input */}
+                                            <div className="flex gap-2">
+                                                <textarea
+                                                    value={replyInputs[feedback.id] ?? feedback.reply ?? ''}
+                                                    onChange={(e) => setReplyInputs(prev => ({ ...prev, [feedback.id]: e.target.value }))}
+                                                    placeholder="Reply to victim..."
+                                                    className="flex-1 bg-zinc-900 border border-zinc-700 text-white px-2 py-1 text-sm focus:border-red-500 focus:outline-none min-h-[60px]"
+                                                />
+                                                <button
+                                                    onClick={() => handleUpdateReply(feedback.id)}
+                                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-xs uppercase transition-colors h-fit"
+                                                >
+                                                    Reply
+                                                </button>
+                                            </div>
+
                                             <button
                                                 onClick={() => handleDeleteFeedback(feedback.id)}
                                                 className="w-full bg-red-900 hover:bg-red-800 text-red-300 px-3 py-1 text-xs uppercase transition-colors"
