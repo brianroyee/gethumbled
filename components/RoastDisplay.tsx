@@ -1,6 +1,7 @@
 'use client';
 
 import { RoastResponse } from '@/types/roast';
+import FeedbackForm from './FeedbackForm';
 
 interface RoastDisplayProps {
     roast: RoastResponse;
@@ -91,6 +92,9 @@ export default function RoastDisplay({ roast, onReset }: RoastDisplayProps) {
                     </p>
                 </div>
             </div>
+
+            {/* Feedback Form */}
+            <FeedbackForm />
 
             {/* Action Buttons */}
             <div className="flex flex-col md:flex-row gap-4 pt-4">

@@ -60,3 +60,41 @@ export async function resetVisitorCount() {
         return false;
     }
 }
+
+// Feedback System
+export type Feedback = {
+  text: string;
+  name: string;
+  date: string;
+};
+
+export async function submitFeedback(text: string, name: string) {
+  if (!text || text.length > 280) return false;
+  
+  const feedback: Feedback = {
+    text: text.slice(0, 280), // Truncate just in case
+    name: name.slice(0, 50) || 'Anonymous',
+    date: new Date().toISOString(),
+  };
+
+  try {
+    // Push to list and keep only last 50 items
+    await kv.lpush('feedback_list', feedback);
+    await kv.ltrim('feedback_list', 0, 49);
+    return true;
+  } catch (error) {
+    console.error('Failed to submit feedback:', error);
+    return false;
+  }
+}
+
+export async function getRecentFeedback() {
+  try {
+    // Get top 10 feedback items
+    const feedback = await kv.lrange<Feedback>('feedback_list', 0, 9);
+    return feedback;
+  } catch (error) {
+    console.error('Failed to fetch feedback:', error);
+    return [];
+  }
+}
