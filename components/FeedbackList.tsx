@@ -10,15 +10,18 @@ export default function FeedbackList() {
     getRecentFeedback().then(setFeedbacks);
   }, []);
 
-  if (feedbacks.length === 0) return null;
-
   return (
     <div className="w-full max-w-6xl mx-auto mt-16 mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
       <h2 className="text-center text-zinc-500 font-mono uppercase tracking-widest text-sm mb-8">
         Wall of Shame (Recent Victims)
       </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {feedbacks.length === 0 ? (
+        <div className="text-center py-12 border-2 border-dashed border-zinc-800 bg-zinc-900/30">
+          <p className="text-zinc-600 font-mono text-sm">No victims yet... be the first! 💀</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {feedbacks.map((item, i) => (
           <div 
             key={i}
@@ -38,6 +41,7 @@ export default function FeedbackList() {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }
