@@ -48,3 +48,39 @@ export async function GET() {
     return NextResponse.json({ emails: [] });
   }
 }
+
+// Delete specific email entry
+export async function DELETE(request: NextRequest) {
+  try {
+    const { email, timestamp } = await request.json();
+
+    if (!email || !timestamp) {
+      return NextResponse.json(
+        { error: 'Email and timestamp required' },
+        { status: 400 }
+      );
+    }
+
+    // Get all emails
+    const allEmails = await kv.lrange('ctf_gift_emails', 0, 199);
+    
+    // Filter out the specific entry
+    const filtered = (allEmails as any[]).filter(
+      entry => !(entry.email === email && entry.timestamp === timestamp)
+    );
+
+    // Clear and repopulate
+    await kv.del('ctf_gift_emails');
+    if (filtered.length > 0) {
+      await kv.lpush('ctf_gift_emails', ...filtered);
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Failed to delete email:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete email' },
+      { status: 500 }
+    );
+  }
+}

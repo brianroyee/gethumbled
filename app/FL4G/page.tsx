@@ -10,6 +10,8 @@ type Challenge = {
   difficulty: string;
   flag: string;
   completed: boolean;
+  category: string;
+  tags: string[];
 };
 
 type LeaderboardEntry = {
@@ -40,7 +42,9 @@ export default function FL4GPage() {
       name: 'Network Ninja',
       difficulty: 'Medium',
       flag: 'NETWORK_NINJA_1',
-      completed: false
+      completed: false,
+      category: 'Web',
+      tags: ['HTTP Headers', 'Cryptography', 'OSINT']
     },
     {
       id: 'level_2',
@@ -48,7 +52,9 @@ export default function FL4GPage() {
       name: 'Prompt Master',
       difficulty: 'Hard',
       flag: 'PROMPT_MASTER_2',
-      completed: false
+      completed: false,
+      category: 'Web',
+      tags: ['Prompt Injection', 'AI Security', 'Input Validation']
     }
   ];
 
@@ -328,6 +334,18 @@ export default function FL4GPage() {
                             • Hints Used: {(currentHintIndex[challenge.level] || 0)}/3
                           </span>
                         )}
+                      </div>
+
+                      {/* Category and Tags */}
+                      <div className="flex items-center gap-2 mt-3 flex-wrap">
+                        <span className="bg-blue-600/20 border border-blue-500/50 text-blue-400 px-2 py-1 text-xs uppercase font-mono font-bold">
+                          {challenge.category}
+                        </span>
+                        {challenge.tags.map((tag, idx) => (
+                          <span key={idx} className="bg-zinc-800 border border-zinc-700 text-zinc-400 px-2 py-1 text-xs font-mono">
+                            {tag}
+                          </span>
+                        ))}
                       </div>
                     </div>
                     
