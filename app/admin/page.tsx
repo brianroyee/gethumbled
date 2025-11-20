@@ -24,6 +24,8 @@ export default function AdminPage() {
     const [loading, setLoading] = useState(false);
     const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
     const [rankInputs, setRankInputs] = useState<Record<string, string>>({});
+    const [ctfStats, setCTFStats] = useState<{ level_1: number; level_2: number; total: number }>({ level_1: 0, level_2: 0, total: 0 });
+    const [giftEmails, setGiftEmails] = useState<any[]>([]);
 
     // Load initial data when authenticated
     useEffect(() => {
@@ -39,6 +41,29 @@ export default function AdminPage() {
         setCurrentFunding(Number(funding));
         setVisitors(Number(visitorCount));
         setFeedbacks(allFeedback);
+        
+        // Fetch CTF stats
+        try {
+            const response = await fetch('/api/submit-flag');
+            const data = await response.json();
+            const solves = data.solvesByLevel || {};
+            setCTFStats({
+                level_1: solves.level_1 || 0,
+                level_2: solves.level_2 || 0,
+                total: data.totalSolvers || 0
+            });
+        } catch (error) {
+            console.error('Failed to fetch CTF stats:', error);
+        }
+        
+        // Fetch gift emails
+        try {
+            const emailResponse = await fetch('/api/submit-email');
+            const emailData = await emailResponse.json();
+            setGiftEmails(emailData.emails || []);
+        } catch (error) {
+            console.error('Failed to fetch gift emails:', error);
+        }
     };
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -187,6 +212,52 @@ export default function AdminPage() {
                             Reset count
                         </button>
                     </div>
+                </div>
+
+                {/* CTF Challenge Stats */}
+                <div className="bg-gradient-to-br from-purple-950/50 to-purple-900/30 border-2 border-purple-500 p-6 mb-8">
+                    <h3 className="text-sm text-purple-400 mb-4 uppercase">CTF Challenge Statistics</h3>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="text-center">
+                            <div className="text-3xl font-bold text-purple-400">{ctfStats.level_1}</div>
+                            <div className="text-xs text-zinc-400 mt-1">Level 1 Solves</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl font-bold text-purple-400">{ctfStats.level_2}</div>
+                            <div className="text-xs text-zinc-400 mt-1">Level 2 Solves</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-3xl font-bold text-purple-300">{ctfStats.total}</div>
+                            <div className="text-xs text-zinc-400 mt-1">Total Solvers</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Gift Emails */}
+                <div className="bg-gradient-to-br from-green-950/50 to-emerald-900/30 border-2 border-green-500 p-6 mb-8">
+                    <h3 className="text-sm text-green-400 mb-4 uppercase">CTF Gift Email Submissions</h3>
+                    {giftEmails.length === 0 ? (
+                        <p className="text-zinc-500 text-center py-4 font-mono text-sm">No email submissions yet</p>
+                    ) : (
+                        <div className="space-y-2 max-h-96 overflow-y-auto">
+                            {giftEmails.map((entry: any, index: number) => (
+                                <div key={index} className="bg-zinc-800 border border-green-700/30 p-4 flex items-center justify-between">
+                                    <div className="flex-1">
+                                        <div className="text-white font-mono text-sm">{entry.email}</div>
+                                        <div className="text-zinc-500 text-xs font-mono mt-1">
+                                            {entry.name} • {entry.level} • {new Date(entry.timestamp).toLocaleDateString()}
+                                        </div>
+                                    </div>
+                                    <a
+                                        href={`mailto:${entry.email}`}
+                                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-xs uppercase font-mono transition-colors"
+                                    >
+                                        Email
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Update Funding */}

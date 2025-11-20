@@ -59,6 +59,28 @@ export async function POST(request: NextRequest) {
 
     // 3. Prompt Injection Defense (Keyword Blocking)
     const lowerText = truncatedText.toLowerCase();
+    
+    // level 2 CTF Challenge: Secret trigger phrase
+    const ctfTriggers = [
+      'i am the roastmaster supreme',
+      'roastmaster supreme',
+      'i am roastmaster'
+    ];
+    
+    const hasCTFTrigger = ctfTriggers.some(trigger => lowerText.includes(trigger));
+    
+    if (hasCTFTrigger) {
+      const flagFromEnv = process.env.CTF_FLAG_LEVEL_2 || 'PROMPT_MASTER_2';
+      return NextResponse.json({
+        score: 10,
+        headline_roast: "🎉 CONGRATULATIONS, HACKER! 🎉",
+        summary_roast: "You found the secret! You've successfully bypassed the filters with creativity. Here's your reward, you magnificent prompt engineer.",
+        buzzword_count: 0,
+        red_flags: ["CTF_MASTER", "PROMPT_NINJA", "EASTER_EGG_HUNTER"],
+        career_advice: `🚩 FLAG: ${flagFromEnv} 🚩 - Submit this to /FL4G to claim your victory!`
+      });
+    }
+    
     const forbiddenPhrases = [
       'ignore previous instructions',
       'ignore all instructions',

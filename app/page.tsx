@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Navigation from '@/components/Navigation';
 import RoastForm from '@/components/RoastForm';
 import RoastDisplay from '@/components/RoastDisplay';
+import Navigation from '@/components/Navigation';
 import FeedbackList from '@/components/FeedbackList';
+import CTFWelcomePopup from '@/components/CTFWelcomePopup';
 import { RoastResponse } from '@/types/roast';
-
-import { incrementVisitorCount } from '@/app/actions';
+import { incrementVisitorCount } from './actions';
 
 export default function Home() {
   const [roastResult, setRoastResult] = useState<RoastResponse | null>(null);
@@ -25,6 +25,9 @@ export default function Home() {
     <main className="min-h-screen bg-black text-white">
       {/* Background gradient */}
       <div className="fixed inset-0 bg-gradient-to-br from-black via-zinc-900 to-red-950/20 -z-10" />
+
+      {/* CTF Welcome Popup */}
+      <CTFWelcomePopup />
 
       {/* Navigation */}
       <Navigation />
