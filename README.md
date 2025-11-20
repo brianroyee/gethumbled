@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GetHumbled 🔥
 
-## Getting Started
+**Brutally honest AI feedback for LinkedIn profiles**
 
-First, run the development server:
+GetHumbled is a web application that roasts LinkedIn profiles using AI, giving users the harsh reality check they need to stand out in a sea of corporate buzzwords and generic achievements.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## What It Does
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+GetHumbled analyzes LinkedIn profile text and delivers savage, recruiter-perspective feedback that cuts through the noise. Think of it as your brutally honest friend who actually tells you what's wrong with your profile - except it's an AI trained to think like a ruthless recruiter.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **AI-Powered Roasting**: Uses Groq's LLaMA 3.3 70B model with a custom "ruthless recruiter" persona to analyze profiles
+- **Screenshot Upload**: Mobile-friendly OCR using Tesseract.js - just snap a screenshot of your LinkedIn profile instead of copy-pasting
+- **Instant Feedback**: Get roasted in seconds with actionable insights on what needs fixing
+- **Wall of Shame**: Public feedback board where brave souls share their reactions
+- **Educational Content**: Learn why the "About" section is critical and how to optimize it
+- **Feedback Moderation**: Admin controls to manage and rank user testimonials
 
-## Learn More
+## How It Works
 
-To learn more about Next.js, take a look at the following resources:
+### 1. Input
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Users can provide their LinkedIn profile in two ways:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Paste text**: Traditional copy-paste from LinkedIn
+- **Upload screenshot**: Snap a photo on mobile, upload it, and OCR extracts the text automatically
 
-## Deploy on Vercel
+### 2. AI Analysis
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The profile text is sent to Groq's API with a carefully crafted system prompt that instructs the AI to:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Think like a senior recruiter who's seen thousands of profiles
+- Identify buzzwords, vague claims, and red flags
+- Deliver feedback in a sarcastic, brutalist tone
+- Focus on the "About" section as the most critical element
+
+### 3. Results Display
+
+The roast is displayed in a Bento Grid layout with:
+
+- **Main roast**: The brutal feedback
+- **Key issues**: Specific problems identified
+- **Action items**: What to fix first
+- **Educational link**: Why the About section matters
+
+### 4. Feedback Loop
+
+After getting roasted, users can:
+
+- Submit their reaction to the "Wall of Shame"
+- Share their results
+- Learn from educational content
+
+## Tech Stack
+
+- **Frontend**: Next.js 16 with React, TypeScript, and Tailwind CSS
+- **AI**: Groq API (LLaMA 3.3 70B Versatile model)
+- **OCR**: Tesseract.js for client-side image-to-text conversion
+- **Database**: Vercel KV (Redis) for persistent data storage
+- **Deployment**: Vercel with automatic GitHub integration
+
+## Architecture
+
+### Rate Limiting
+
+- 2 requests per minute per IP address
+- Prevents API abuse and manages costs
+
+### Security
+
+- Prompt injection protection with input sanitization
+- Admin dashboard protected by password authentication
+- Server-side validation for all user inputs
+
+### Data Storage
+
+All data is stored in Vercel KV (Redis):
+
+- **Funding amount**: Tracks donations for API costs
+- **Visitor count**: Analytics for homepage traffic
+- **Feedback list**: User testimonials with ranking system
+
+### Admin Features
+
+The admin dashboard (`/admin`) provides:
+
+- Funding progress tracking
+- Visitor analytics
+- Feedback moderation (delete inappropriate content)
+- Ranking system to feature the best testimonials
+
+## Design Philosophy
+
+**Brutalist Aesthetic**: The entire UI embraces a dark, brutalist design with:
+
+- High contrast (black background, red accents)
+- Monospace fonts
+- Strong borders and geometric layouts
+- Micro-animations for engagement
+- No-nonsense, direct messaging
+
+This design choice reinforces the product's core value: brutal honesty without sugar-coating.
+
+## Why It Exists
+
+Most LinkedIn profiles are filled with:
+
+- Generic buzzwords ("passionate," "results-driven," "team player")
+- Vague achievements without metrics
+- Copy-pasted job descriptions
+- Weak or missing "About" sections
+
+Recruiters spend an average of 6 seconds scanning a profile. If yours doesn't immediately stand out, you're invisible.
+
+GetHumbled exists to give people the wake-up call they need - before it costs them opportunities.
+
+---
+
+**Live Demo**: [gethumbled.vercel.app](https://gethumbled.vercel.app) _(replace with your actual URL)_
+
+**Built by**: Brian Roy  
+**License**: MIT

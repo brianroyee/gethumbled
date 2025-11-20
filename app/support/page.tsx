@@ -79,7 +79,7 @@ export default function SupportPage() {
             </div>
             <div className="bg-zinc-900 border-2 border-red-500/30 p-6 hover:border-red-500 transition-colors group">
                 <div className="text-red-500 text-2xl mb-2 group-hover:scale-110 transition-transform">📋</div>
-                <div className="text-sm text-zinc-300 font-mono">No Copy/Paste</div>
+                <div className="text-sm text-zinc-300 font-mono">No More Copy/Paste</div>
             </div>
             <div className="bg-zinc-900 border-2 border-red-500/30 p-6 hover:border-red-500 transition-colors group">
                 <div className="text-red-500 text-2xl mb-2 group-hover:scale-110 transition-transform">🔄</div>
