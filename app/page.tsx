@@ -39,6 +39,15 @@ export default function Home() {
           <p className="text-zinc-400 text-base md:text-lg font-mono max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 fill-mode-backwards">
             Paste your LinkedIn profile text. Get brutally honest feedback from an AI that's seen it all.
           </p>
+          
+          <div className="pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-backwards">
+            <a
+                href="/why-about-matters"
+                className="inline-block bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white font-mono uppercase py-2 px-4 border border-zinc-800 hover:border-red-500/50 transition-all text-xs tracking-wider"
+            >
+                Why the "About" Section is Critical →
+            </a>
+          </div>
         </header>
 
         {/* Main Content */}

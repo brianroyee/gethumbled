@@ -113,7 +113,7 @@ export default function RoastDisplay({ roast, onReset }: RoastDisplayProps) {
                 <p className="text-zinc-500 mb-3 text-sm">Stung a little? Here's why it matters:</p>
                 <a
                     href="/why-about-matters"
-                    className="inline-block text-zinc-400 hover:text-red-400 transition-colors text-sm uppercase tracking-wide border-b border-zinc-700 hover:border-red-400 pb-0.5"
+                    className="inline-block bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white font-mono uppercase py-3 px-6 border-2 border-zinc-700 hover:border-red-500 transition-all text-sm tracking-wider mt-2"
                 >
                     Why the "About" Section is Critical →
                 </a>
