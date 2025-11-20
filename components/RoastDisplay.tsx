@@ -2,6 +2,8 @@
 
 import { RoastResponse } from '@/types/roast';
 import FeedbackForm from './FeedbackForm';
+import { useState, useRef } from 'react';
+import { toPng } from 'html-to-image';
 
 interface RoastDisplayProps {
     roast: RoastResponse;
@@ -9,6 +11,9 @@ interface RoastDisplayProps {
 }
 
 export default function RoastDisplay({ roast, onReset }: RoastDisplayProps) {
+    const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+    const roastRef = useRef<HTMLDivElement>(null);
+
     const getScoreColor = (score: number) => {
         if (score <= 3) return 'text-red-500';
         if (score <= 6) return 'text-orange-500';
@@ -22,17 +27,75 @@ export default function RoastDisplay({ roast, onReset }: RoastDisplayProps) {
         return 'NOT TERRIBLE';
     };
 
-    const handleShare = () => {
-        const tweetText = `I got roasted by LinkedIn Profile Roaster and scored ${roast.score}/10 😭\n\n"${roast.career_advice}"\n\nGet humbled at: ${window.location.origin}`;
+    const generateImage = async () => {
+        if (!roastRef.current) return null;
+        
+        setIsGeneratingImage(true);
+        try {
+            const dataUrl = await toPng(roastRef.current, {
+                quality: 0.95,
+                pixelRatio: 2,
+            });
+            return dataUrl;
+        } catch (error) {
+            console.error('Failed to generate image:', error);
+            return null;
+        } finally {
+            setIsGeneratingImage(false);
+        }
+    };
+
+    const handleShareToLinkedIn = async () => {
+        const imageUrl = await generateImage();
+        if (!imageUrl) {
+            alert('Failed to generate image. Please try again.');
+            return;
+        }
+
+        // Download the image
+        const link = document.createElement('a');
+        link.download = 'linkedin-roast.png';
+        link.href = imageUrl;
+        link.click();
+
+        // Open LinkedIn share dialog
+        const text = `I got roasted by GetHumbled and scored ${roast.score}/10 😭\n\nGet your brutal feedback at: ${window.location.origin}`;
+        const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin)}`;
+        
+        setTimeout(() => {
+            window.open(linkedInUrl, '_blank');
+            alert('Image downloaded! Now upload it to your LinkedIn post.');
+        }, 500);
+    };
+
+    const handleShareToX = async () => {
+        const imageUrl = await generateImage();
+        if (!imageUrl) {
+            alert('Failed to generate image. Please try again.');
+            return;
+        }
+
+        // Download the image
+        const link = document.createElement('a');
+        link.download = 'linkedin-roast.png';
+        link.href = imageUrl;
+        link.click();
+
+        // Open X share dialog
+        const tweetText = `I got roasted by GetHumbled and scored ${roast.score}/10 😭\n\nGet humbled at: ${window.location.origin}`;
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-        window.open(twitterUrl, '_blank');
+        
+        setTimeout(() => {
+            window.open(twitterUrl, '_blank');
+            alert('Image downloaded! Now upload it to your post on X.');
+        }, 500);
     };
 
     return (
         <div className="w-full max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             
             {/* Bento Grid Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div ref={roastRef} className="grid grid-cols-1 md:grid-cols-12 gap-6">
                 
                 {/* 1. Score Card (Large, Top Left) */}
                 <div className="md:col-span-4 bg-zinc-900 border-4 border-red-500 p-8 flex flex-col justify-center items-center text-center shadow-[8px_8px_0px_0px_rgba(239,68,68,0.5)] hover:translate-x-1 hover:-translate-y-1 transition-transform duration-300">
@@ -99,14 +162,22 @@ export default function RoastDisplay({ roast, onReset }: RoastDisplayProps) {
             {/* Action Buttons */}
             <div className="flex flex-col md:flex-row gap-4 pt-4">
                 <button
-                    onClick={handleShare}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-mono uppercase tracking-wider py-4 px-8 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all"
+                    onClick={handleShareToLinkedIn}
+                    disabled={isGeneratingImage}
+                    className="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-mono uppercase tracking-wider py-4 px-8 border-b-4 border-blue-900 active:border-b-0 active:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    Share on X
+                    {isGeneratingImage ? 'Generating...' : '📸 Share to LinkedIn'}
+                </button>
+                <button
+                    onClick={handleShareToX}
+                    disabled={isGeneratingImage}
+                    className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white font-mono uppercase tracking-wider py-4 px-8 border-b-4 border-zinc-900 active:border-b-0 active:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {isGeneratingImage ? 'Generating...' : '📸 Share to X'}
                 </button>
                 <button
                     onClick={onReset}
-                    className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-mono uppercase tracking-wider py-4 px-8 border-b-4 border-zinc-950 active:border-b-0 active:translate-y-1 transition-all"
+                    className="flex-1 bg-red-900 hover:bg-red-800 text-zinc-300 font-mono uppercase tracking-wider py-4 px-8 border-b-4 border-red-950 active:border-b-0 active:translate-y-1 transition-all"
                 >
                     Roast Another
                 </button>
