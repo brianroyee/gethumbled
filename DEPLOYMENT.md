@@ -39,18 +39,17 @@ If you haven't already, push your local code to a new GitHub repository:
 
 5. Click **"Deploy"**.
 
-## 4. Set Up Database (Vercel KV)
+## 4. Set Up Database (Upstash Redis)
 
-This is **critical** for saving your funding amount and visitor stats. Without this, data will reset every time the app restarts.
+This is **critical** for saving your funding amount and visitor stats.
 
 1. Once deployed, go to your **Project Dashboard** on Vercel.
-2. Click the **"Storage"** tab at the top.
+2. Click the **"Storage"** tab.
 3. Click **"Create Database"**.
-4. Select **"Vercel KV"** (Redis).
-5. Choose a region (e.g., `Washington, D.C., USA` or whatever is closest to you).
-6. Click **"Create"**.
-7. **Connect**: Ensure the database is connected to your project (it usually does this automatically).
-   - _Note: This automatically adds `KV_REST_API_URL` and `KV_REST_API_TOKEN` to your environment variables._
+4. Select **"Upstash"** (Serverless DB) from the Marketplace list.
+5. Click **"Connect"** or **"Create"**.
+6. Accept the terms and wait for it to provision.
+7. **Environment Variables**: It will automatically add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` to your project. My code is updated to detect these automatically!
 
 ## 5. Final Redeploy
 
