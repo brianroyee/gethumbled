@@ -38,7 +38,7 @@ export default function Home() {
             <span className="text-white">Humbled.</span>
           </h1>
           <p className="text-zinc-400 text-base md:text-lg font-mono max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 fill-mode-backwards">
-            Paste your LinkedIn profile text. Get brutally honest feedback from an AI that's seen it all.
+            Paste your LinkedIn profile text or upload a screenshot of the "About" section. Get brutally honest feedback from an AI that's seen it all.
           </p>
           
           <div className="pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-backwards">
