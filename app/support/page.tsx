@@ -87,6 +87,28 @@ export default function SupportPage() {
             </div>
         </div>
 
+        {/* Why We Need Funds - Detailed Explanation */}
+        <div className="bg-zinc-900/50 border border-zinc-800 p-8 mb-12">
+            <h2 className="text-xl text-red-400 mb-4 uppercase font-mono tracking-wider">Why do we need money?</h2>
+            <div className="space-y-4 text-zinc-400 text-sm leading-relaxed font-mono">
+                <p>
+                    Right now, you have to manually copy/paste your LinkedIn "About" section. 
+                    That's annoying. We want to fix it.
+                </p>
+                <p>
+                    To automatically fetch your profile just from your URL, we need to use the <span className="text-white">Proxycurl API</span>. 
+                    This API costs money for every single request.
+                </p>
+                <ul className="list-disc list-inside space-y-2 pl-2">
+                    <li><span className="text-white">Current Cost:</span> $0 (Manual Copy/Paste)</li>
+                    <li><span className="text-white">Goal:</span> $50/month covers ~1,000 automated roasts</li>
+                </ul>
+                <p className="pt-2 text-xs uppercase tracking-widest text-zinc-500">
+                    Every dollar goes directly to API credits. No profit. Just better roasts.
+                </p>
+            </div>
+        </div>
+
         {/* Support Methods */}
         <div className="mb-12">
           <h2 className="text-xl text-red-400 mb-6 uppercase text-center font-mono tracking-wider">Choose Your Method</h2>
