@@ -1,10 +1,28 @@
 'use server'
 
 import { createClient } from '@vercel/kv';
+import fs from 'fs';
+import path from 'path';
+
+// Helper to get env vars locally if process.env is missing them
+function getEnvVar(key: string): string | undefined {
+  if (process.env[key]) return process.env[key];
+  try {
+    const envPath = path.join(process.cwd(), '.env.local');
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, 'utf-8');
+      const match = content.match(new RegExp(`${key}=(".*?"|[^#\n]+)`));
+      if (match) return match[1].replace(/"/g, '');
+    }
+  } catch (e) {
+    // Ignore error
+  }
+  return undefined;
+}
 
 const kv = createClient({
-  url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || 'https://example.vercel-kv.com',
-  token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || 'example_token',
+  url: getEnvVar('KV_REST_API_URL') || getEnvVar('UPSTASH_REDIS_REST_URL') || 'https://example.vercel-kv.com',
+  token: getEnvVar('KV_REST_API_TOKEN') || getEnvVar('UPSTASH_REDIS_REST_TOKEN') || 'example_token',
 });
 
 
@@ -119,6 +137,16 @@ export async function migrateCounts() {
     return { success: true, visitorCount, roastCount, newTotal };
   } catch (error: any) {
     console.error('Migration action failed:', error);
+    return { success: false, error: error.message || String(error) };
+  }
+}
+
+export async function setRoastCount(count: number) {
+  try {
+    await kv.set('roastCount', count);
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to set roast count:', error);
     return { success: false, error: error.message || String(error) };
   }
 }

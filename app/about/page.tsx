@@ -1,6 +1,11 @@
 import Navigation from '@/components/Navigation';
+import { getRoastCount } from '@/app/actions';
 
-export default function AboutPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function AboutPage() {
+    const roastCount = await getRoastCount();
+
     return (
         <main className="min-h-screen bg-black text-white">
             {/* Background gradient */}
@@ -36,7 +41,7 @@ export default function AboutPage() {
                                 <div className="text-zinc-500 text-xs font-mono uppercase">Data Stored</div>
                             </div>
                             <div>
-                                <div className="text-3xl md:text-4xl font-bold text-white mb-1 group-hover:text-red-500 transition-colors">∞</div>
+                                <div className="text-3xl md:text-4xl font-bold text-white mb-1 group-hover:text-red-500 transition-colors">{roastCount}</div>
                                 <div className="text-zinc-500 text-xs font-mono uppercase">Roasts Served</div>
                             </div>
                         </div>

@@ -9,6 +9,8 @@ import {
     updateFundingAmount, 
     getVisitorCount, 
     resetVisitorCount,
+    getRoastCount,
+    setRoastCount,
     getAllFeedback,
     deleteFeedback,
     updateFeedbackRank,
@@ -21,6 +23,8 @@ export default function AdminPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [currentFunding, setCurrentFunding] = useState<number>(0);
     const [visitors, setVisitors] = useState<number>(0);
+    const [roastCount, setRoastCountState] = useState<number>(0);
+    const [newRoastCount, setNewRoastCount] = useState('');
     const [newFunding, setNewFunding] = useState('');
     const [loading, setLoading] = useState(false);
     const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
@@ -39,9 +43,11 @@ export default function AdminPage() {
     const loadData = async () => {
         const funding = await getFundingAmount();
         const visitorCount = await getVisitorCount();
+        const roasts = await getRoastCount();
         const allFeedback = await getAllFeedback();
         setCurrentFunding(Number(funding));
         setVisitors(Number(visitorCount));
+        setRoastCountState(Number(roasts));
         setFeedbacks(allFeedback);
         
         // Fetch CTF stats
@@ -116,6 +122,22 @@ export default function AdminPage() {
             }
         } else {
             alert('Please enter a valid amount');
+        }
+    };
+
+    const handleUpdateRoastCount = async () => {
+        const count = parseInt(newRoastCount);
+        if (!isNaN(count) && count >= 0) {
+            const result = await setRoastCount(count);
+            if (result.success) {
+                setRoastCountState(count);
+                setNewRoastCount('');
+                alert('Roast count updated!');
+            } else {
+                alert('Failed to update: ' + (result.error || 'Unknown error'));
+            }
+        } else {
+            alert('Please enter a valid number');
         }
     };
 
@@ -326,6 +348,34 @@ export default function AdminPage() {
                     </div>
                     <p className="text-xs text-zinc-500 mt-2">
                         This will update the progress bar on the Support page
+                    </p>
+                </div>
+
+                {/* Calibrate Roast Count */}
+                <div className="bg-zinc-900 border-2 border-orange-500/30 p-6 mb-8">
+                    <h2 className="text-xl text-orange-400 mb-4 uppercase">Calibrate Roast Count</h2>
+                    <div className="mb-4">
+                        <div className="text-sm text-zinc-500 uppercase">Current Count</div>
+                        <div className="text-3xl font-bold text-orange-500">{roastCount}</div>
+                    </div>
+                    <div className="flex gap-4">
+                        <input
+                            type="number"
+                            value={newRoastCount}
+                            onChange={(e) => setNewRoastCount(e.target.value)}
+                            placeholder="Set new count (e.g., 64)"
+                            className="flex-1 bg-zinc-800 border-2 border-zinc-700 text-white p-3 focus:border-orange-500 focus:outline-none"
+                            min="0"
+                        />
+                        <button
+                            onClick={handleUpdateRoastCount}
+                            className="bg-orange-600 hover:bg-orange-700 text-white uppercase px-6 py-3 border-2 border-orange-500 transition-colors"
+                        >
+                            Calibrate
+                        </button>
+                    </div>
+                    <p className="text-xs text-zinc-500 mt-2">
+                        Manually set the "Profiles Humbled" counter on the About page.
                     </p>
                 </div>
 
