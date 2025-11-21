@@ -79,6 +79,52 @@ export async function incrementRoastCount() {
   }
 }
 
+export async function migrateCounts() {
+  try {
+    // Manual env loading fallback
+    let url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+    let token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+    if (!url || !token) {
+      try {
+        const fs = await import('fs');
+        const path = await import('path');
+        const envPath = path.join(process.cwd(), '.env.local');
+        if (fs.existsSync(envPath)) {
+          const envContent = fs.readFileSync(envPath, 'utf-8');
+          const urlMatch = envContent.match(/(?:KV_REST_API_URL|UPSTASH_REDIS_REST_URL)=(".*?"|[^#\n]+)/);
+          const tokenMatch = envContent.match(/(?:KV_REST_API_TOKEN|UPSTASH_REDIS_REST_TOKEN)=(".*?"|[^#\n]+)/);
+          
+          if (urlMatch) url = urlMatch[1].replace(/"/g, '');
+          if (tokenMatch) token = tokenMatch[1].replace(/"/g, '');
+        }
+      } catch (e) {
+        console.error('Failed to read .env.local:', e);
+      }
+    }
+
+    if (!url || !token) {
+      throw new Error('Missing KV credentials');
+    }
+
+    // Create a fresh client with explicit credentials
+    const tempKv = createClient({ url, token });
+
+    const visitorCount = await tempKv.get<number>('visitorCount') || 0;
+    const roastCount = await tempKv.get<number>('roastCount') || 0;
+    
+    const newTotal = Number(visitorCount) + Number(roastCount);
+    
+    await tempKv.set('roastCount', newTotal);
+    return { success: true, visitorCount, roastCount, newTotal };
+  } catch (error: any) {
+    console.error('Migration action failed:', error);
+    return { success: false, error: error.message || String(error) };
+  }
+}
+
+
+
 
 
 // Feedback System
