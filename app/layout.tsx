@@ -20,7 +20,7 @@ export default function RootLayout({
         <script 
           async 
           data-cfasync="false" 
-          src="//pl28099870.effectivegatecpm.com/4f6b2bd98afadfd3f05a20777c2cbc24/invoke.js"
+          src="//rarelywithinlull.com/4f6b2bd98afadfd3f05a20777c2cbc24/invoke.js"
         />
       </body>
     </html>
