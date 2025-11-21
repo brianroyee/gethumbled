@@ -68,8 +68,16 @@ export default function Home() {
           <FeedbackList />
         </div>
 
+        {/* Ad Disclaimer */}
+        <div className="mt-12 mb-4 text-center">
+          <p className="text-zinc-500 text-xs font-mono">
+            Ads are placed for sourcing revenue to the goal.<br />
+            Ads managed by adsterra.com
+          </p>
+        </div>
+
         {/* Ad Container */}
-        <div className="mt-12 flex justify-center">
+        <div className="flex justify-center">
           <div id="container-4f6b2bd98afadfd3f05a20777c2cbc24"></div>
         </div>
 
