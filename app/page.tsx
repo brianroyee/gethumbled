@@ -7,18 +7,24 @@ import Navigation from '@/components/Navigation';
 import FeedbackList from '@/components/FeedbackList';
 import CTFWelcomePopup from '@/components/CTFWelcomePopup';
 import { RoastResponse } from '@/types/roast';
-import { incrementVisitorCount } from './actions';
+import { incrementVisitorCount, getRoastCount } from './actions';
 
 export default function Home() {
   const [roastResult, setRoastResult] = useState<RoastResponse | null>(null);
+  const [roastCount, setRoastCount] = useState<number>(0);
 
   useEffect(() => {
     // Track visitor count on server
     incrementVisitorCount();
+    
+    // Fetch roast count
+    getRoastCount().then(count => setRoastCount(count));
   }, []);
 
   const handleReset = () => {
     setRoastResult(null);
+    // Refresh count on reset (optional, but nice)
+    getRoastCount().then(count => setRoastCount(count));
   };
 
   return (
@@ -44,7 +50,15 @@ export default function Home() {
             Paste your LinkedIn profile text or upload a screenshot of the "About" section. Get brutally honest feedback from an AI that's seen it all.
           </p>
           
-          <div className="pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-backwards">
+          {/* Verified Counter */}
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-backwards">
+             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/50 border border-zinc-800 text-xs font-mono text-zinc-500">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/>
+                {roastCount > 0 ? roastCount.toLocaleString() : '...'} profiles humbled so far
+             </div>
+          </div>
+
+          <div className="pt-2 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-backwards">
             <a
                 href="/why-about-matters"
                 className="inline-block bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white font-mono uppercase py-2 px-4 border border-zinc-800 hover:border-red-500/50 transition-all text-xs tracking-wider"
