@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { incrementRoastCount } from '@/app/actions';
 import Groq from 'groq-sdk';
 import { createClient } from '@vercel/kv';
 import { headers } from 'next/headers';
@@ -140,6 +141,9 @@ Analyze the profile and respond with a JSON object (and ONLY JSON, no markdown f
 
     // Parse the JSON response
     const roastData = JSON.parse(responseText);
+
+    // Increment global roast count (API calls)
+    incrementRoastCount().catch(err => console.error('Failed to increment roast count:', err));
 
     return NextResponse.json(roastData);
   } catch (error) {

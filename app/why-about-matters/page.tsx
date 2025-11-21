@@ -1,6 +1,16 @@
+'use client';
+
 import Navigation from '@/components/Navigation';
+import { useState, useEffect } from 'react';
+import { getRoastCount } from '../actions';
 
 export default function WhyAboutMattersPage() {
+  const [roastCount, setRoastCount] = useState<number>(0);
+
+  useEffect(() => {
+    getRoastCount().then(count => setRoastCount(Number(count)));
+  }, []);
+
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="fixed inset-0 bg-gradient-to-br from-black via-zinc-900 to-red-950/20 -z-10" />
@@ -15,6 +25,23 @@ export default function WhyAboutMattersPage() {
           <p className="text-zinc-400 text-lg font-mono max-w-2xl mx-auto">
             The "About" section isn't just filler text. It's your money maker.
           </p>
+
+          {/* Verified Counter Box */}
+          <div className="flex justify-center pt-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+            <div className="bg-zinc-900/80 border border-zinc-800 rounded-xl p-6 flex items-center gap-5 max-w-sm mx-auto backdrop-blur-sm hover:border-red-500/30 transition-colors group">
+              <div className="bg-green-500/10 p-3 rounded-full group-hover:bg-green-500/20 transition-colors">
+                <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+              </div>
+              <div className="text-left">
+                <div className="text-3xl font-bold font-mono text-white leading-none mb-1">
+                  {roastCount > 0 ? roastCount.toLocaleString() : '...'}
+                </div>
+                <div className="text-xs text-zinc-500 font-mono uppercase tracking-widest group-hover:text-zinc-400 transition-colors">
+                  Profiles Humbled
+                </div>
+              </div>
+            </div>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">

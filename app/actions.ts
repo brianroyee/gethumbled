@@ -61,6 +61,24 @@ export async function resetVisitorCount() {
     }
 }
 
+export async function getRoastCount() {
+  try {
+    const count = await kv.get<number>('roastCount');
+    return count || 0;
+  } catch (error) {
+    return 0;
+  }
+}
+
+export async function incrementRoastCount() {
+  try {
+    const count = await kv.incr('roastCount');
+    return count;
+  } catch (error) {
+    return 0;
+  }
+}
+
 
 
 // Feedback System
