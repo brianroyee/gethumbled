@@ -431,11 +431,11 @@ export default function FL4GPage() {
                 <ul className="space-y-2 text-zinc-400 text-sm font-mono">
                   <li className="flex items-start gap-2">
                     <span className="text-yellow-500">▸</span>
-                    <span>Use browser DevTools (F12) to inspect network requests and headers</span>
+                    <span>Use browser DevTools (F12) to inspect requests and headers</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-yellow-500">▸</span>
-                    <span>ROT13 is a simple cipher - many online decoders available</span>
+                    <span> ***13 is a simple cipher - many online decoders available</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-yellow-500">▸</span>
